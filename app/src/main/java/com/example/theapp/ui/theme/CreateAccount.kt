@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.theapp.R
 
 @Composable
-fun CreateAccountScreen() {
+fun CreateAccountScreen(navController: androidx.navigation.NavController) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -114,7 +114,7 @@ fun CreateAccountScreen() {
             // Buton de creare cont
             Button(
                 onClick = {
-                    // Logica pentru creare cont
+                    navController.navigate("login")
                 },
                 modifier = Modifier
                     .fillMaxWidth()

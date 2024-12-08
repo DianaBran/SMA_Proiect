@@ -18,6 +18,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.theapp.ui.theme.ResetPasswordScreen
+import com.example.theapp.ui.theme.WelcomeBackScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,22 +34,28 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation() {
-    // Controller pentru navigare
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = "login" // Ecranul de start
+        startDestination = "login"
     ) {
         composable("login") {
-            LoginScreen(
-                onCreateAccountClick = {
-                    navController.navigate("create_account")
-                }
-            )
+            LoginScreen(navController = navController)
         }
         composable("create_account") {
-            CreateAccountScreen()
+            CreateAccountScreen(navController = navController)
         }
+        composable("reset_password") {
+            ResetPasswordScreen(navController = navController)
+        }
+        composable("welcome_back") {
+            WelcomeBackScreen(
+                onSetGoalClick = { navController.navigate("set_goal") },
+                onNotificationsClick = { navController.navigate("notifications") },
+                onViewProgressClick = { navController.navigate("view_progress") }
+            )
+        }
+
     }
 }

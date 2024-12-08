@@ -93,7 +93,6 @@ fun ResetPasswordScreen(navController: androidx.navigation.NavController) {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6200EE))
             ) {
                 Text(
-
                     text = "Reset Password",
                     color = Color.White,
                     fontSize = 16.sp,

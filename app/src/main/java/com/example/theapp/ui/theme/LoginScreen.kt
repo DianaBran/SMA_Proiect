@@ -24,7 +24,7 @@ import com.example.theapp.R
 
 
 @Composable
-fun LoginScreen(onCreateAccountClick: () -> Unit) {
+fun LoginScreen(navController: androidx.navigation.NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -40,6 +40,8 @@ fun LoginScreen(onCreateAccountClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
+                .size(300.dp)
+
         )
 
         Column(
@@ -52,7 +54,7 @@ fun LoginScreen(onCreateAccountClick: () -> Unit) {
             // Titlu
             Text(
                 text = "Hello!",
-                fontSize = 40.sp,
+                fontSize = 60.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF6200EE),
                 textAlign = TextAlign.Center
@@ -107,7 +109,7 @@ fun LoginScreen(onCreateAccountClick: () -> Unit) {
             // Text Forgot Password
             TextButton(
                 onClick = {
-                    // Logica pentru resetare parolă
+                    navController.navigate("reset_password")
                 }
             ) {
                 Text(
@@ -122,7 +124,7 @@ fun LoginScreen(onCreateAccountClick: () -> Unit) {
             // Buton Log In
             Button(
                 onClick = {
-                    // Logica pentru autentificare
+                    navController.navigate("welcome_back")
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6200EE))
@@ -149,7 +151,7 @@ fun LoginScreen(onCreateAccountClick: () -> Unit) {
                 )
                 TextButton(
                     onClick = {
-                        onCreateAccountClick()
+                        navController.navigate("create_account") // Navigare la CreateAccountScreen
                     }
                 ) {
                     Text(
@@ -161,7 +163,7 @@ fun LoginScreen(onCreateAccountClick: () -> Unit) {
             }
         }
 
-        // Imagine jos (de exemplu, user + listă)
+        // Imagine jos
         Image(
             painter = painterResource(id = R.drawable.filling_survey),
             contentDescription = "User Survey Image",
@@ -169,6 +171,7 @@ fun LoginScreen(onCreateAccountClick: () -> Unit) {
                 .size(120.dp)
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)
+                .size(250.dp)
         )
     }
 }
