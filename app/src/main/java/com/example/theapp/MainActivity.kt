@@ -11,37 +11,43 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.theapp.ui.theme.CreateAccountScreen
 import com.example.theapp.ui.theme.TheAppTheme
+import com.example.theapp.ui.theme.LoginScreen
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             TheAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavigation()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun AppNavigation() {
+    // Controller pentru navigare
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TheAppTheme {
-        Greeting("Android")
+    NavHost(
+        navController = navController,
+        startDestination = "login" // Ecranul de start
+    ) {
+        composable("login") {
+            LoginScreen(
+                onCreateAccountClick = {
+                    navController.navigate("create_account")
+                }
+            )
+        }
+        composable("create_account") {
+            CreateAccountScreen()
+        }
     }
 }
