@@ -64,8 +64,7 @@ fun WelcomeBackScreen(
             // Buton "Set Goal"
             Button(
                 onClick = { onSetGoalClick() },
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6200EE))
             ) {

@@ -17,10 +17,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import com.example.theapp.R
+import data.repository.FirestoreRepository
 
 @Composable
-fun ResetPasswordScreen(navController: androidx.navigation.NavController) {
+fun ResetPasswordScreen(navController: androidx.navigation.NavController,
+                        firestoreRepository: FirestoreRepository)
+{
+    var email by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
+    var resetError by remember { mutableStateOf<String?>(null) }
 
     Box(
         modifier = Modifier
@@ -55,6 +60,23 @@ fun ResetPasswordScreen(navController: androidx.navigation.NavController) {
                 textAlign = TextAlign.Center
             )
 
+            // Câmp pentru email
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email Address") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_email_24),
+                        contentDescription = "Email Icon"
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFE3F2FD)),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+            )
+
             // Câmp pentru parolă nouă
             TextField(
                 value = newPassword,
@@ -80,12 +102,31 @@ fun ResetPasswordScreen(navController: androidx.navigation.NavController) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
 
+            // Mesaj eroare
+            if (resetError != null) {
+                Text(
+                    text = resetError ?: "",
+                    color = MaterialTheme.colors.error,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             // Buton pentru resetarea parolei
             Button(
                 onClick = {
-                    navController.navigate("login")
+                    firestoreRepository.updateUserPassword(
+                        email = email,
+                        newPassword = newPassword,
+                        onSuccess = {
+                            resetError = null
+                            navController.navigate("login")
+                        },
+                        onFailure = { exception ->
+                            resetError = "Error: ${exception.message}"
+                        }
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,7 +134,6 @@ fun ResetPasswordScreen(navController: androidx.navigation.NavController) {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6200EE))
             ) {
                 Text(
-
                     text = "Reset Password",
                     color = Color.White,
                     fontSize = 16.sp,

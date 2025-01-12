@@ -19,14 +19,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import com.example.theapp.R
-
-
+import data.repository.FirestoreRepository
 
 
 @Composable
-fun LoginScreen(navController: androidx.navigation.NavController) {
+fun LoginScreen(navController: androidx.navigation.NavController,
+                firestoreRepository: FirestoreRepository
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var loginError by remember { mutableStateOf<String?>(null) }
 
     Box(
         modifier = Modifier
@@ -106,10 +108,21 @@ fun LoginScreen(navController: androidx.navigation.NavController) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Mesaj eroare
+            if (loginError != null) {
+                Text(
+                    text = loginError ?: "",
+                    color = MaterialTheme.colors.error,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             // Text Forgot Password
             TextButton(
                 onClick = {
-                    navController.navigate("reset_password")
+                    navController.navigate("reset_password") // Navigare către ecranul ResetPassword
                 }
             ) {
                 Text(
@@ -124,7 +137,23 @@ fun LoginScreen(navController: androidx.navigation.NavController) {
             // Buton Log In
             Button(
                 onClick = {
-                    navController.navigate("welcome_back")
+                    firestoreRepository.getUsers(
+                        onSuccess = { result ->
+                            val userExists = result.documents.any { document ->
+                                document.getString("email") == email && document.getString("password") == password
+                            }
+
+                            if (userExists) {
+                                loginError = null
+                                navController.navigate("welcome_back")
+                            } else {
+                                loginError = "Invalid email or password"
+                            }
+                        },
+                        onFailure = { exception ->
+                            loginError = "Error: ${exception.message}"
+                        }
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6200EE))
@@ -138,7 +167,7 @@ fun LoginScreen(navController: androidx.navigation.NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Text pentru înregistrare
+            // Navigare la Create Account
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -149,11 +178,9 @@ fun LoginScreen(navController: androidx.navigation.NavController) {
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
-                TextButton(
-                    onClick = {
-                        navController.navigate("create_account") // Navigare la CreateAccountScreen
-                    }
-                ) {
+                TextButton(onClick = {
+                    navController.navigate("create_account")
+                }) {
                     Text(
                         text = "Create one",
                         fontSize = 14.sp,
@@ -168,10 +195,9 @@ fun LoginScreen(navController: androidx.navigation.NavController) {
             painter = painterResource(id = R.drawable.filling_survey),
             contentDescription = "User Survey Image",
             modifier = Modifier
-                .size(120.dp)
+                .size(250.dp)
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)
-                .size(250.dp)
         )
     }
 }

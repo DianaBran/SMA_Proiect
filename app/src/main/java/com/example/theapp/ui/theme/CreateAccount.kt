@@ -17,9 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import com.example.theapp.R
+import data.repository.FirestoreRepository
 
 @Composable
-fun CreateAccountScreen(navController: androidx.navigation.NavController) {
+fun CreateAccountScreen(navController: androidx.navigation.NavController,
+                        firestoreRepository: FirestoreRepository)
+{
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -114,6 +117,13 @@ fun CreateAccountScreen(navController: androidx.navigation.NavController) {
             // Buton de creare cont
             Button(
                 onClick = {
+                    firestoreRepository.addUser(
+                        username= username,
+                        email = email,
+                        password = password,
+                        onSuccess = { navController.navigate("login") },
+                        onFailure = { println("Error: ${it.message}") }
+                    )
                     navController.navigate("login")
                 },
                 modifier = Modifier
